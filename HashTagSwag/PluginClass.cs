@@ -15,20 +15,24 @@ namespace HashTagSwag {
         }
 
         public static void ChatSending ( object sender, ChatSendingEventArgs e ) {
-            if ( e.Message == null ) return;
-            if ( e.Player == null ) return;
-
-            //Parse greentext
-            if ( e.Message.Length > 1 && e.MessageType == ChatMessageType.Global ) {
-                if ( e.Message.StartsWith( ">" ) && e.Message[1] != ' ' ) {
-                    e.FormattedMessage = String.Format( "{0}&F: {1}{2}", e.Player.ClassyName, Color.Lime, e.Message );
+            if ( e.MessageType == ChatMessageType.Global ) {
+                if ( e.Message == null )
                     return;
+                if ( e.Player == null )
+                    return;
+
+                //Parse greentext
+                if ( e.Message.Length > 1 && e.MessageType == ChatMessageType.Global ) {
+                    if ( e.Message.StartsWith( ">" ) && e.Message[1] != ' ' ) {
+                        e.FormattedMessage = String.Format( "{0}&F: {1}{2}", e.Player.ClassyName, Color.Lime, e.Message );
+                        return;
+                    }
                 }
+                //Parse all others
+                string Message = e.Message; //use only e.Message so you don't accidentally highlight user names ect
+                Message = HighlightSections( Message );
+                e.FormattedMessage = String.Format( "{0}&F: {1}", e.Player.ClassyName, Message ); //reformat the message 
             }
-            //Parse all others
-            string Message = e.Message; //use only e.Message so you don't accidentally highlight user names ect
-            Message = HighlightSections( Message );
-            e.FormattedMessage = String.Format( "{0}&F: {1}", e.Player.ClassyName, Message ); //reformat the message 
         }
 
         /// <summary>
